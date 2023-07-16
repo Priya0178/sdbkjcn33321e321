@@ -294,30 +294,37 @@ async def cb_handler(client: Client, query: CallbackQuery):
             await query.answer("I Like Your Smartness, But Don't Be Oversmart 😒", show_alert=True)
             return
         ident, file_id = query.data.split("#")
-        files_ = await get_file_details(file_id)
-        if not files_:
-            return await query.answer('No such file exist.')
-        files = files_[0]
-        title = files.file_name
-        size = get_size(files.file_size)
-        f_caption = files.caption
+        xd = await message.reply_text("`Please Wait`")
+        try:
+            fxd = await client.send_cached_media(
+                chat_id=query.from_user.id,
+                file_id=file_id,
+                caption=f_caption,
+                protect_content=True if ident == 'checksubp' else False
+            )
+        except Exception as e:
+            return await xd.edit(f'No such file exist.{e}')
+        await xd.delete()
+        filetype = fxd.media
+        file = getattr(fxd, filetype.value)
+        title = file.file_name
+        size=get_size(file.file_size)
         if CUSTOM_FILE_CAPTION:
-            try:
-                f_caption = CUSTOM_FILE_CAPTION.format(file_name='' if title is None else title,
-                                                       file_size='' if size is None else size,
-                                                       file_caption='' if f_caption is None else f_caption)
-            except Exception as e:
-                logger.exception(e)
-                f_caption = f_caption
-        if f_caption is None:
-            f_caption = f"{title}"
-        await query.answer()
-        await client.send_cached_media(
-            chat_id=query.from_user.id,
-            file_id=file_id,
-            caption=f_caption,
-            protect_content=True if ident == 'checksubp' else False
-        )
+            try: 
+                f_caption=CUSTOM_FILE_CAPTION.format(file_name= '' if title is None else title, file_size='' if size is None else size, file_caption='')
+            except:
+                f_caption=""
+            await fxd.edit_caption(f_caption)
+            return 
+        else: 
+            try: 
+                f_caption='' if title is None else title)
+            except:
+                f_caption=""
+            await fxd.edit_caption(f_caption)
+            return 
+    
+        
     elif query.data == "pages":
         await query.answer()
     elif query.data == "start":
