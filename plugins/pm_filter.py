@@ -315,7 +315,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
             return 
         else: 
             try: 
-                f_caption='' if title is None else title)
+                f_caption='' if title is None else title
             except:
                 f_caption=""
             await fxd.edit_caption(f_caption)
