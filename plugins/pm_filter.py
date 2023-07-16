@@ -290,9 +290,6 @@ async def cb_handler(client: Client, query: CallbackQuery):
         if AUTH_CHANNEL and not await is_requested(client, query):
             await query.answer("I Like Your Smartness, But Don't Be Oversmart 😒", show_alert=True)
             return
-        if AUTH_CHANNEL and not await is_subscribed(client, query):
-            await query.answer("I Like Your Smartness, But Don't Be Oversmart 😒", show_alert=True)
-            return
         ident, file_id = query.data.split("#")
         xd = await message.reply_text("`Please Wait`")
         try:
@@ -324,7 +321,6 @@ async def cb_handler(client: Client, query: CallbackQuery):
             await fxd.edit_caption(f_caption)
             return 
     
-        
     elif query.data == "pages":
         await query.answer()
     elif query.data == "start":
